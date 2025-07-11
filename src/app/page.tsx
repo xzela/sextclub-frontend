@@ -1,5 +1,6 @@
 "use client";
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -20,10 +21,13 @@ export default function Home() {
         </div>
         <h2 className="text-2xl text-center">The <strong className="fire">hottest</strong> place to <strong className="text-red-500 uppercase">sext</strong> on the whole damn <strong className="">internet</strong></h2>
       </div>
+      <div>
+        <Link href='/login'>Login Here</Link>
+      </div>
       <div className="content-wrapper p-2">
         <div>
           <h2 className="text-2xl text-center font-bold">You can do it anywhere. Even from your bed</h2>
-          <div>
+          <div className="">
             <Image
             src="/sexting_lady_01.png"
             width={500}
