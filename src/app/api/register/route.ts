@@ -33,9 +33,7 @@ export async function createUser(phone: string, password: string): Promise<User 
 }
 
 async function postHandler(request:Request) {
-  console.log('request', request);
   const bodyFormData = await request.formData();
-  console.log('request:body', bodyFormData);
   const phone = bodyFormData.get('phone') as string;
   const password = bodyFormData.get('password') as string;
   const user = createUser(phone, password);
