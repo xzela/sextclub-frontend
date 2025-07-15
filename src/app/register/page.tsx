@@ -1,7 +1,6 @@
 "use client";
 
-import { login } from '@/app/actions/auth';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { useActionState } from 'react';
 
@@ -9,19 +8,47 @@ const initialState = {
   message: '',
 }
 
-export default function LoginPage() {
-  const {data: session, status } = useSession();
-  // const getSession = await getSession();
+export async function register(previousState: any, formData: FormData) {
+  const phone = formData.get('phone') as string;
+  const password = formData.get('password') as string;
 
-  const [state, loginAction, pending] = useActionState(login, initialState)
+  const user = await fetch('/api/register/', {
+    body: formData,
+    method: 'POST'
+  });
+  console.log('register[page.tsx]:register', user);
+
+  const response = await signIn('credentials', {
+    phone: phone,
+    password: password,
+    redirect: false
+  });
+
+  console.log('actions:auth:signin', response);
+
+  if (response.ok) {
+    return redirect('/protected')
+  }
+  return {
+    message: 'Oops! Check your credentials and try again.'
+  }
+}
+
+export default function RegisterPage() {
+  const {data: session, status } = useSession();
+
+  const [state, registerAction, pending] = useActionState(register, initialState)
   if (session?.user?.phone) {
     redirect('/');
   }
-  console.log('login:pages.tsx:state', state)
+  console.log('register:pages.tsx:state', state)
   return (
     <div className="">
       <div className="hero-wrapper flex flex-col justify-center items-center p-2 min-h-screen">
-        <form className="flex flex-col" action={loginAction}>
+        <div>
+          <h1>Create Account</h1>
+        </div>
+        <form className="flex flex-col" action={registerAction}>
           <div className="grid grid-cols-3 p-2 rounded-md">
             <div className="text-right pr-1 pt-1">
               <label className="font-bold" htmlFor="phone">phone:</label>

@@ -28,6 +28,7 @@ function AuthButton() {
 export default function NavHeader() {
   return (
     <div className="flex justify-around items-center py-2">
+      <Link href="/">Home</Link>
       <Link href="/protected">Protected Route</Link>
       <AuthButton />
     </div>

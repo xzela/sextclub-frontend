@@ -1,6 +1,7 @@
 import { signIn } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 
+
 export async function login(previousState: any, formData: FormData) {
   const phone = formData.get('phone');
   const password = formData.get('password');
@@ -15,3 +16,4 @@ export async function login(previousState: any, formData: FormData) {
       message: 'Oops! Check your credentials and try again.'
     }
 }
+

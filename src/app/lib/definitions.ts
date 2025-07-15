@@ -5,5 +5,6 @@
 export type User = {
   id: string;
   phone: string;
+  password: string;
   av_verified: boolean;
 };

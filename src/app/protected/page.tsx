@@ -9,6 +9,10 @@ export default async function LoginPage() {
     redirect('/login');
   }
 
+  if (!session || !session?.user?.avVerified) {
+    redirect('/verification');
+  }
+
   return (
     <div className="">
       <div className="hero-wrapper flex flex-col justify-center items-center p-2 min-h-screen">
