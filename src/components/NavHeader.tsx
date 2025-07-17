@@ -13,13 +13,13 @@ function AuthButton() {
         <div>
           {session?.user?.phone}
         </div>
-        <button className="p-1 font-bold bg-amber-500 rounded-md" onClick={() => signOut()}>Sign out</button>
+        <button className="cursor-pointer p-1 font-bold bg-amber-500 hover:text-amber-700 rounded-md" onClick={() => signOut()}>Sign out</button>
       </div>
     );
   }
   return (
     <div>
-      <button className="p-1 px-2 font-bold text-black bg-amber-500 rounded-md uppercase" onClick={() => signIn()}>Sign In</button>
+      <button className="cursor-pointer p-1 px-2 font-bold text-black bg-amber-500 hover:text-amber-700 rounded-md uppercase" onClick={() => signIn()}>Sign In</button>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+"use server";
 
 async function getHandler(request:Request) {
   const data = [
