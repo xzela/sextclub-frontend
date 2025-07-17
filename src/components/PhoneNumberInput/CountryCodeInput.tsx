@@ -17,7 +17,8 @@ import {
 
 const ANCHOR_PROP = { to: 'bottom start' as const, gap: '12px' };
 
-export type Props = {
+export type CountryCodeProps = {
+  id?: string;
   /**
    * Provide a list of countries to render
    */
@@ -37,7 +38,7 @@ export function CountryCodeInput({
   countryList,
   value,
   onChange,
-}) {
+}: CountryCodeProps) {
   const useCountryFilter = (countryList: CountryCodeConfig[]) => {
     const [filteredList, setFilteredList] = useState(countryList);
 
@@ -65,7 +66,7 @@ export function CountryCodeInput({
     return { filter, setFilter, filteredList };
   };
 
-  const useCountrySelect = ({ value, onChange, countryList }: Props) => {
+  const useCountrySelect = ({ value, onChange, countryList }: CountryCodeProps) => {
     const [selected, setSelected] = useState(value);
 
     useEffect(() => {

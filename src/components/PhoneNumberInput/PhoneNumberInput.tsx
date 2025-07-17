@@ -3,11 +3,11 @@ import { format } from '@react-input/mask';
 import { ChangeEvent, useCallback } from 'react';
 import { useMask } from './useMask';
 
-export type Props = {
+export type PhoneNumberInputProps = {
   /**
    * Provide an id for the input
    */
-  id: string;
+  id?: string;
   /**
    * Set input mask template. _ character is replaced by phone number digits
    * @example
@@ -29,7 +29,7 @@ export function PhoneNumberInput({
   mask = '______________',
   onChange,
   value: valueProp,
-}) {
+}: PhoneNumberInputProps) {
   const { options, hasEmptyMask, inputRef } = useMask({ mask });
 
   const value = format(valueProp, options);
