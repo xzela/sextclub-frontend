@@ -6,12 +6,11 @@ import Link from 'next/link';
 
 function AuthButton() {
   const {data: session} = useSession();
-  console.log('authButton:session', session);
   if (session) {
     return (
       <div>
         <div>
-          {session?.user?.phone}
+          {session?.user?.phone_formatted}
         </div>
         <button className="cursor-pointer p-1 font-bold bg-amber-500 hover:text-amber-700 rounded-md" onClick={() => signOut()}>Sign out</button>
       </div>

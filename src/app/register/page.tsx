@@ -4,22 +4,27 @@ import { CountryCodeInput } from '@/components/PhoneNumberInput/CountryCodeInput
 import { CountryCodeConfig, countryCodeList } from '@/components/PhoneNumberInput/countryCodeList';
 import { PhoneNumberInput } from '@/components/PhoneNumberInput/PhoneNumberInput';
 import { Input } from '@headlessui/react';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, SignInResponse, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { useActionState, useCallback, useState } from 'react';
 import z from 'zod';
 
-const initialState = {
+type InitialState = {
+  phone: string;
+  message: string
+};
+
+const initialState: InitialState = {
   phone: '',
   message: '',
 }
 
-export async function register(previousState: any, formData: FormData) {
+export async function register(previousState: InitialState, formData: FormData) {
   const phone = formData.get('phone') as string;
   const password = formData.get('password') as string;
   const schema = {
-    phone: z.string().regex(new RegExp(/^\+[1-9]\d{1,14}$/)),
+    phone: z.string(),
     password: z.string().min(6),
   };
   const validator = z.object(schema).safeParse({phone, password});
@@ -29,20 +34,25 @@ export async function register(previousState: any, formData: FormData) {
       message: validator.error.issues[0].message
     }
   }
+
   if (validator.success) {
-    const user = await fetch('/api/register/', {
+    const userResponse = await fetch('/api/register/', {
       body: formData,
       method: 'POST'
     });
-    console.log('register[page.tsx]:register', user);
-    const response = await signIn('credentials', {
-      phone: phone,
+    const body = await userResponse.json();
+    if (body.error) {
+      return {
+        phone,
+        message: body.error.message,
+      }
+    }
+    const { user } = body;
+    const response: SignInResponse = await signIn('credentials', {
+      phone: user.phone,
       password: password,
       redirect: false
-    });
-
-    console.log('actions:auth:signin', response);
-
+    }) as SignInResponse;
     if (response.ok) {
       return redirect('/protected')
     }
@@ -55,7 +65,7 @@ export async function register(previousState: any, formData: FormData) {
 }
 
 export default function RegisterPage() {
-  const {data: session, status } = useSession();
+  const {data: session } = useSession();
 // phone number logic
 const [phoneNumber, setPhoneNumber] = useState('');
 const handlePhoneChange = useCallback((value: string) => {
@@ -75,7 +85,7 @@ const mask = countryCodeList.find(({ code }) => code === countryCode)?.mask;
   if (session?.user?.phone) {
     redirect('/');
   }
-  console.log('register:pages.tsx:state', state)
+
   return (
     <div className="px-4">
       <div className="hero-wrapper flex flex-col justify-center items-center p-2 min-h-screen">

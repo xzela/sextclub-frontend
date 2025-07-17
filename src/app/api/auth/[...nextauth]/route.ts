@@ -1,7 +1,8 @@
 import { User } from "@/app/lib/definitions";
 import bcrypt from 'bcrypt';
-import mysql from "mysql2/promise";
-import NextAuth from "next-auth";
+import mysql, { RowDataPacket } from "mysql2/promise";
+import NextAuth, { Account, Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import z from 'zod';
 
@@ -18,7 +19,7 @@ async function getUser(phone: string): Promise<User | undefined> {
   try {
     const [results] = await connection.query(
       `SELECT * FROM members WHERE phone="${phone}"`
-    );
+    ) as RowDataPacket[];
     const user = results[0];
     return user as User;
   } catch (error) {
@@ -36,34 +37,25 @@ export const authOptions = {
     newUser: '/register' // New users will be directed here on first sign in (leave the property out if not of interest)
   },
   callbacks: {
-    async session({ session, user, token }) {
-      console.log('session:session', session);
-      console.log('session:user', user);
-      console.log('session:token', token);
+    async session({ session, token }: {session: Session, token: JWT }) {
       session.user = token.user;
       return session
     },
-    async jwt({ token, user }){
-      console.log('jwt:user', user);
-      console.log('jwt:token', token);
-      if (user) {
+    async jwt({ token, user, account } : { token: JWT, user: User, account: Account } ){
+      if (user || account) {
         token.user = user;
       }
       return token;
     },
-    async signIn({ user, account, profile, email, credentials }) {
-      console.log('signin:account', account);
-      console.log('signin:user', user);
-      console.log('signin:profile', profile);
-      console.log('signin:email', email);
-      console.log('signin:credentials',credentials);
-      return true
-    },
+    // async signIn({ user, account, profile, email, credentials }) {
+    //   console.log('signin:account', account);
+    //   console.log('signin:user', user);
+    //   console.log('signin:profile', profile);
+    //   console.log('signin:email', email);
+    //   console.log('signin:credentials',credentials);
+    //   return true
+    // },
   },
-  // session: {
-  //   strategy: 'jwt', // 'jwt' or 'database'
-  //   maxAge: 30 * 24 * 60 * 60, // Session expiration (30 days)
-  // },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -77,11 +69,12 @@ export const authOptions = {
             password: z.string().min(6),
           })
           .safeParse(credentials);
+          console.log('credentials', credentials);
         if (parsedCredentials.success) {
           const { phone, password } = parsedCredentials.data;
           const user = await getUser(phone);
           if (!user) {
-            return undefined;
+            return null;
           }
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
@@ -90,7 +83,7 @@ export const authOptions = {
             return user as User;
           }
         }
-        return undefined;
+        return null;
       },
     }),
   ],

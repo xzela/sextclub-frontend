@@ -15,8 +15,7 @@ const initialState = {
 }
 
 export default function LoginPage() {
-  const {data: session, status } = useSession();
-  // const getSession = await getSession();
+  const {data: session, } = useSession();
   // phone number logic
   const [phoneNumber, setPhoneNumber] = useState('');
   const handlePhoneChange = useCallback((value: string) => {
