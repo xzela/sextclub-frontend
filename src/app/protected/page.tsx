@@ -9,7 +9,7 @@ export default async function LoginPage() {
     redirect('/login');
   }
 
-  if (!session || !session?.user?.avVerified) {
+  if (!session || !session?.user?.av_verified) {
     redirect('/verification');
   }
 
