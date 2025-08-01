@@ -47,14 +47,6 @@ export const authOptions = {
       }
       return token;
     },
-    // async signIn({ user, account, profile, email, credentials }) {
-    //   console.log('signin:account', account);
-    //   console.log('signin:user', user);
-    //   console.log('signin:profile', profile);
-    //   console.log('signin:email', email);
-    //   console.log('signin:credentials',credentials);
-    //   return true
-    // },
   },
   providers: [
     CredentialsProvider({
